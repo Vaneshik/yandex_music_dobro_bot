@@ -1,0 +1,4 @@
+aiohttp
+yandex-music
+aiogram
+psycopg2-binary

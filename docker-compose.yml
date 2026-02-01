@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:15
+    container_name: db-ymbot
+    environment:
+      - POSTGRES_DB=ymbot
+      - POSTGRES_USER=ymbot
+      - POSTGRES_PASSWORD=ymbot
+    ports:
+      - 5433:5432
+    volumes:
+      - db-ymbot-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ymbot -d ymbot" ]
+      interval: 5s
+      timeout: 1s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - ymbot
+
+  bot:
+    build: .
+    container_name: ymbot-bot
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - ymbot
+
+networks:
+  ymbot:
+    name: ymbot
+
+volumes:
+  db-ymbot-data:
