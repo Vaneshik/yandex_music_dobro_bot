@@ -125,8 +125,7 @@ async def inline_handler(query: InlineQuery):
         )
         return
 
-    cover_path = await download_cover(track.get_cover_url())
-    track_file = await download_music(download_url)
+    cover_path, track_file = await asyncio.gather(download_cover(track.get_cover_url()), download_music(download_url))
 
     msg = await bot.send_audio(
         chat_id=CACHE_CHANNEL_ID,
